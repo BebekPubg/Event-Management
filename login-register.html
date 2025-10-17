@@ -81,13 +81,13 @@
             <p class="opacity-90">Sign in to continue or create an account</p>
         </div>
         
-        <div class="tabs flex border-b">
-            <button id="login-tab" class="tab-active flex-1 py-4 font-medium text-center">Login</button>
-            <button id="register-tab" class="flex-1 py-4 font-medium text-center text-gray-500">Register</button>
+        <div class="tabs flex border-b" role="tablist">
+            <button id="login-tab" class="tab-active flex-1 py-4 font-medium text-center" role="tab" aria-selected="true" aria-controls="login-form">Login</button>
+            <button id="register-tab" class="flex-1 py-4 font-medium text-center text-gray-500" role="tab" aria-selected="false" aria-controls="register-form">Register</button>
         </div>
-        
+
         <!-- Login Form -->
-        <div id="login-form" class="p-6">
+        <div id="login-form" class="p-6" role="tabpanel" aria-labelledby="login-tab">
             <div class="mb-4">
                 <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                 <input type="email" id="login-email" class="input-field w-full px-4 py-3 rounded-lg outline-none" placeholder="your@email.com">
@@ -120,7 +120,7 @@
         </div>
         
         <!-- Register Form (Hidden by default) -->
-        <div id="register-form" class="p-6 hidden">
+        <div id="register-form" class="p-6 hidden" role="tabpanel" aria-labelledby="register-tab" aria-hidden="true">
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
@@ -159,39 +159,39 @@
     </div>
 
     <script>
-        // Tab switching functionality
         const loginTab = document.getElementById('login-tab');
         const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        
-        loginTab.addEventListener('click', () => {
-            loginTab.classList.add('tab-active');
-            loginTab.classList.remove('text-gray-500');
-            registerTab.classList.remove('tab-active');
-            registerTab.classList.add('text-gray-500');
-            
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-        });
-        
-        registerTab.addEventListener('click', () => {
-            registerTab.classList.add('tab-active');
-            registerTab.classList.remove('text-gray-500');
-            loginTab.classList.remove('tab-active');
-            loginTab.classList.add('text-gray-500');
-            
-            registerForm.classList.remove('hidden');
-            loginForm.classList.add('hidden');
-        });
-        
-        // Form submission (demo only)
-        document.querySelectorAll('button.btn-primary, button.btn-secondary').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
+        const formButtons = document.querySelectorAll('button.btn-primary, button.btn-secondary');
+
+        function activateTab(tab) {
+            const isLoginTab = tab === 'login';
+
+            loginTab.classList.toggle('tab-active', isLoginTab);
+            loginTab.classList.toggle('text-gray-500', !isLoginTab);
+            loginTab.setAttribute('aria-selected', String(isLoginTab));
+
+            registerTab.classList.toggle('tab-active', !isLoginTab);
+            registerTab.classList.toggle('text-gray-500', isLoginTab);
+            registerTab.setAttribute('aria-selected', String(!isLoginTab));
+
+            loginForm.classList.toggle('hidden', !isLoginTab);
+            loginForm.setAttribute('aria-hidden', String(!isLoginTab));
+
+            registerForm.classList.toggle('hidden', isLoginTab);
+            registerForm.setAttribute('aria-hidden', String(isLoginTab));
+        }
+
+        loginTab.addEventListener('click', () => activateTab('login'));
+        registerTab.addEventListener('click', () => activateTab('register'));
+
+        formButtons.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
                 alert('This is a demo form. In a real application, this would securely process your information.');
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'967319e4f000d437',t:'MTc1Mzg2MDEwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
